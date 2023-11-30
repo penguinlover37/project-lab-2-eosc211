@@ -56,7 +56,8 @@ def parse_earthquakes_to_np(df):
     lons = np.array(df["Longitude"])
     depths = np.array(df["Depth"])
     magnitudes = np.array(df["Magnitude"])
-    times = np.array(df["Time"])
+    times_object = np.array(df["Time"])
+    times = pd.to_datetime(times_object)
     return lats, lons, depths, magnitudes, times
 
 
