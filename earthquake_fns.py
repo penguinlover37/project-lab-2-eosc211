@@ -30,7 +30,6 @@ def get_plate_boundaries(plates_files):
         return pb_dict    
     except:
         raise IOError
-    
 #Function 3
 def get_earthquakes(filename):
     try: 
@@ -49,5 +48,16 @@ def parse_earthquakes_to_np(df):
     times = pd.to_datetime(times_object)
     return lats, lons, depths, magnitudes, times
 
+#helper function for c2 graph
 
+def break_line_at_boundary(pb_dict, threshold=180):
+    broken_lines = []
+
+    for bound_lons, bound_lats in pb_dict.items():
+        boundary_indices = np.where(np.abs(np.diff(bound_lats[:, 0])) > threshold)[0] + 1
+        line_segments = np.split(bound_lats, boundary_indices)
+        
+        broken_lines.extend(line_segments)
+
+    return broken_lines
 
