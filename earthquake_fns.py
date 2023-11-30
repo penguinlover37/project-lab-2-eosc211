@@ -41,7 +41,14 @@ def get_plate_boundaries(boundaries_file):
         raise IOError(f"An error occurred while reading the CSV file: {str(e)}")
 
 #Function 3
-
+filename = './IRIS_eq_010100_112422_mag4.csv'
+    
+def get_earthquakes(filename):
+    try: 
+        earthquakes = pd.read_csv(filename)
+        return earthquakes
+    except Exception as e: 
+        raise I0Error (f'Error reading the earthquakes file: {e}')
 
 #Function 4
 def parse_earthquakes_to_np(df):
