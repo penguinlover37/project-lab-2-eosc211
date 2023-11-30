@@ -22,9 +22,9 @@ def get_plate_boundaries(boundaries_file):
         
         for index, row in df.iterrows():
             #
-            plate_name = row['Plate Abbreviation']
-            latitude = row['Latitude']
-            longitude = row['Longitude']
+            plate_name = row['plate']
+            latitude = row['lat']
+            longitude = row['lon']
 
             
             if plate_name in plate_dict:
@@ -39,7 +39,6 @@ def get_plate_boundaries(boundaries_file):
 
     except Exception as e:
         raise IOError(f"An error occurred while reading the CSV file: {str(e)}")
-
 #Function 3
 filename = './IRIS_eq_010100_112422_mag4.csv'
     
