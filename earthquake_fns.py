@@ -21,18 +21,16 @@ def get_plate_boundaries(plates_files):
         lat = np.array(df.iloc[:, 1])
         lon = np.array(df.iloc[:, 2])
         pb_dict = dict()
-        plate_name = ""
+    
         for i in range(len(plate)):
-            if plate_name != plate[i]:   
-                plate_name = plate[i]
-                pb_dict[plate_name] = np.array([[lat[i]], [lon[i]]])
+            if plate[i] not in pb_dict:
+                pb_dict[plate[i]] = np.array([[lon[i], lat[i]]])
             else:
-                temp = pb_dict[plate_name]
-                pb_dict[plate_name] = np.append(temp, np.array([[lat[i]], [lon[i]]]), axis=1)
-        return pb_dict
-        
+                pb_dict[plate[i]] = np.append(pb_dict[plate[i]], np.array([[lon[i], lat[i]]]), axis=0)
+        return pb_dict    
     except:
         raise IOError
+    
 #Function 3
 def get_earthquakes(filename):
     try: 
