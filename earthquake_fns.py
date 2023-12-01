@@ -51,6 +51,12 @@ def parse_earthquakes_to_np(df):
 #helper function for c2 graph
 
 def break_line_at_boundary(pb_dict, threshold=180):
+    '''
+    To solve the issue of plate boundaries "crossing the map" when it needs to transpose between -180 to 180 and vice versa.
+    Creates a list of points at the boundary 180 and ensures that the lines are temporarily split just only at that point and continuous everywhere else
+    returns list as broken_lines
+    
+    '''
     broken_lines = []
 
     for bound_lons, bound_lats in pb_dict.items():
