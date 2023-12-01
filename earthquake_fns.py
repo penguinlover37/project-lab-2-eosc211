@@ -4,6 +4,12 @@ from datetime import datetime
 
 #Function 1
 def get_coastlines(coasts_file):
+    '''
+    Reads longitudes and latitudes of the world's coastlines from csv file.
+    Returns individual 1D arrays of longitudes along world coastline and latitudes along world coastline.
+    input: coasts_file
+    outputs: lon_coast, lat_coast
+    '''
     try:
         df = pd.read_csv(coasts_file)
         lon_coast = df.iloc[:,0]
@@ -15,6 +21,14 @@ def get_coastlines(coasts_file):
 
 #Function 2
 def get_plate_boundaries(plates_files):
+    '''
+    Reads csv file containing three columns (column 1: plate boundary name abbreviations, column 2: latitudes in degrees, column
+    3: longitudes in degrees) and organizes the columns into a dictionary.
+    Returns a dictionary where keys correspond to tectonic plate abbreviations, and values are 2D arrays containing longitudes in 
+    the first column and latitudes in the second column
+    input: plates_file
+    output: pb_dict
+    '''
     try:
         df = pd.read_csv(plates_files)
         plate = np.array(df.iloc[:, 0])
@@ -32,6 +46,7 @@ def get_plate_boundaries(plates_files):
         raise IOError
 #Function 3
 def get_earthquakes(filename):
+    
     try: 
         earthquakes = pd.read_csv(filename)
         return earthquakes
@@ -40,6 +55,13 @@ def get_earthquakes(filename):
 
 #Function 4
 def parse_earthquakes_to_np(df):
+    '''
+    Extracts columns latitude, longitude, depth, magnitude, and time from the input dataframe.
+    Converts the time column to datetime objects.
+    Returns the columns as individual 1D arrays
+    input: df
+    outputs: lats, lons, depths, magnitudes, times
+    '''
     lats = np.array(df["Latitude"])
     lons = np.array(df["Longitude"])
     depths = np.array(df["Depth"])
