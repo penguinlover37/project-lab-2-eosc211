@@ -4,12 +4,6 @@ from datetime import datetime
 
 #Function 1
 def get_coastlines(coasts_file):
-    '''
-    Reads longitudes and latitudes of the world's coastlines from csv file.
-    Returns individual 1D arrays of longitudes along world coastline and latitudes along world coastline.
-    input: coasts_file
-    outputs: lon_coast, lat_coast
-    '''
     try:
         df = pd.read_csv(coasts_file)
         lon_coast = df.iloc[:,0]
@@ -21,14 +15,6 @@ def get_coastlines(coasts_file):
 
 #Function 2
 def get_plate_boundaries(plates_files):
-    '''
-    Reads csv file containing three columns (column 1: plate boundary name abbreviations, column 2: latitudes in degrees, column
-    3: longitudes in degrees) and organizes the columns into a dictionary.
-    Returns a dictionary where keys correspond to tectonic plate abbreviations, and values are 2D arrays containing longitudes in 
-    the first column and latitudes in the second column
-    input: plates_file
-    output: pb_dict
-    '''
     try:
         df = pd.read_csv(plates_files)
         plate = np.array(df.iloc[:, 0])
@@ -46,7 +32,6 @@ def get_plate_boundaries(plates_files):
         raise IOError
 #Function 3
 def get_earthquakes(filename):
-    
     try: 
         earthquakes = pd.read_csv(filename)
         return earthquakes
@@ -55,13 +40,6 @@ def get_earthquakes(filename):
 
 #Function 4
 def parse_earthquakes_to_np(df):
-    '''
-    Extracts columns latitude, longitude, depth, magnitude, and time from the input dataframe.
-    Converts the time column to datetime objects.
-    Returns the columns as individual 1D arrays
-    input: df
-    outputs: lats, lons, depths, magnitudes, times
-    '''
     lats = np.array(df["Latitude"])
     lons = np.array(df["Longitude"])
     depths = np.array(df["Depth"])
@@ -73,12 +51,6 @@ def parse_earthquakes_to_np(df):
 #helper function for c2 graph
 
 def break_line_at_boundary(pb_dict, threshold=180):
-    '''
-    To solve the issue of plate boundaries "crossing the map" when it needs to transpose between -180 to 180 and vice versa.
-    Creates a list of points at the boundary 180 and ensures that the lines are temporarily split just only at that point and continuous everywhere else
-    returns list as broken_lines
-    
-    '''
     broken_lines = []
 
     for bound_lons, bound_lats in pb_dict.items():
@@ -88,4 +60,55 @@ def break_line_at_boundary(pb_dict, threshold=180):
         broken_lines.extend(line_segments)
 
     return broken_lines
+
+#quake subset function
+def select_quake_subset(df, times=None, lons=None, lats=None, depths=None, mags=None):
+    '''
+    argues default arguments that keeps it the same unless you put different things in to fulfill the ifs
+
+    input: df, the original dataframe
+    +whatever filters u want
+
+    output: df_sub, a subselected dataframe
+    '''
+    df_sub = df.copy()
+
+    if depths: #corrected for elegance
+        df_sub = df_sub[(df["Depth"] >= depths[0]) & (df["Depth"] <= depths[1])]
+    if times:
+        df_sub = df_sub[(pd.to_datetime(df["Time"]) >= times[0]) & (pd.to_datetime(df["Time"]) <= times[1])]
+    if lons:
+        df_sub = df_sub[(df["Longitude"] >= lons[0]) & (df["Longitude"] <= lons[1])]
+    if lats:
+        df_sub = df_sub[(df["Latitude"] >= lats[0]) & (df["Latitude"] <= lats[1])]
+    if mags:
+        df_sub = df_sub[(df["Magnitude"] >= mags[0]) & (df["Magnitude"] <= mags[1])]
+        
+    df = df.reset_index(drop=True)
+    df_sub = df_sub.reset_index(drop=True)
+    return df_sub
+
+#slope function
+def get_slope(start_pt, end_pt):
+    """
+    Calculates slope between two Cartesian points and returns the degree of the angle created by the slope
+
+    inputs: start_pt, end_pt, the two Cartesian points we want to try
+    output: slope_degrees, the degree of the angle created by the slope
+    """
+    x1, y1 = start_pt
+    x2, y2 = end_pt
+
+    if x1 == x2:
+        raise ValueError("The x-coordinates of the start and end points cannot be the same. Please provide viable x-coordinates")
+
+    try:
+        slope_radians = math.atan((y2 - y1) / (x2 - x1))
+    except ZeroDivisionError:
+        raise ValueError("The x-coordinates of the start and end points cannot be the same. Please provide viable x-coordinates")
+
+    # Convert slope to degrees
+    slope_degrees = math.degrees(slope_radians)
+
+    return slope_degrees
 
