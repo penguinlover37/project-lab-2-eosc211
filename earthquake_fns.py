@@ -5,6 +5,13 @@ from datetime import datetime
 
 #Function 1
 def get_coastlines(coasts_file):
+    """
+    reads coasts_file and takes the longitudes and latitudes and puts them into a dataframe
+    
+    input: coasts_file
+    
+    output: lon_coast, lat_coast
+    """
     try:
         df = pd.read_csv(coasts_file)
         lon_coast = df.iloc[:,0]
@@ -16,6 +23,13 @@ def get_coastlines(coasts_file):
 
 #Function 2
 def get_plate_boundaries(plates_files):
+    """
+    reads plates_file and sorts the individual plates by plate and puts them into a dictionary
+    
+    input: plates_files
+    
+    output: pb_dict
+    """
     try:
         df = pd.read_csv(plates_files)
         plate = np.array(df.iloc[:, 0])
@@ -33,6 +47,14 @@ def get_plate_boundaries(plates_files):
         raise IOError
 #Function 3
 def get_earthquakes(filename):
+    """
+    Returns file as a panda
+    
+    input: filename
+    
+    output: earthquakes
+    """
+    
     try: 
         earthquakes = pd.read_csv(filename)
         return earthquakes
@@ -41,6 +63,13 @@ def get_earthquakes(filename):
 
 #Function 4
 def parse_earthquakes_to_np(df):
+    """
+    Changes df into arrays
+    
+    input: df
+    
+    output: lats, lons, depths, magnitudes, times
+    """
     lats = np.array(df["Latitude"])
     lons = np.array(df["Longitude"])
     depths = np.array(df["Depth"])
@@ -52,6 +81,13 @@ def parse_earthquakes_to_np(df):
 #helper function for c2 graph
 
 def break_line_at_boundary(pb_dict, threshold=180):
+    """
+    Breaks the lines at the boundaries
+    
+    input: pb_dict, threshold
+    
+    output: broken_lines
+    """
     broken_lines = []
 
     for bound_lons, bound_lats in pb_dict.items():
